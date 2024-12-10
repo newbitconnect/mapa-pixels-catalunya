@@ -4,16 +4,15 @@ document.querySelectorAll("rect").forEach((pixel) => {
         // Cambiar color para mostrar que está seleccionado
         pixel.setAttribute("fill", "yellow");
 
-        // Mostrar ventana para comprar el píxel
+        // Confirmar la compra del píxel
         const id = pixel.getAttribute("id");
         const confirmacion = confirm(`¿Quieres comprar el píxel ${id}?`);
         if (confirmacion) {
-            // Aquí conectaríamos con el sistema de pago
-            alert(`¡Has comprado el píxel ${id}!`);
+            // Marcar el píxel como comprado
             pixel.setAttribute("fill", "blue");
+            alert(`¡Has comprado el píxel ${id}!`);
         } else {
             pixel.setAttribute("fill", "white");
         }
     });
 });
-
