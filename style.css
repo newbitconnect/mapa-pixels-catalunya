@@ -19,11 +19,11 @@ main {
 #map-container {
     display: inline-block;
     margin: auto;
+    border: 2px solid #2c3e50;
 }
 
 #mapa-pixels {
-    border: 2px solid #2c3e50;
     width: 80%;
     height: auto;
+    cursor: pointer;
 }
-
