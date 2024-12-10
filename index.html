@@ -13,21 +13,14 @@
     </header>
     <main>
         <div id="map-container">
-            <svg id="mapa-pixels" viewBox="0 0 1000 1000">
-                <!-- Aquí van los píxeles como <rect> -->
+            <svg id="mapa-pixels" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+                <!-- Aquí van las cuadrículas (píxeles) -->
                 <!-- Ejemplo: -->
-                <rect id="pixel-1" x="0" y="0" width="10" height="10" fill="white" stroke="black"></rect>
+                <rect id="pixel-1" x="10" y="10" width="20" height="20" fill="white" stroke="black"></rect>
+                <rect id="pixel-2" x="30" y="10" width="20" height="20" fill="white" stroke="black"></rect>
+                <!-- Más píxeles -->
             </svg>
         </div>
-        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-    <input type="hidden" name="cmd" value="_xclick">
-    <input type="hidden" name="business" value="tu-email@paypal.com">
-    <input type="hidden" name="item_name" value="Píxel en el mapa">
-    <input type="hidden" name="amount" value="1.00">
-    <input type="hidden" name="currency_code" value="EUR">
-    <input type="submit" value="Comprar">
-</form>
-
     </main>
     <script src="script.js"></script>
 </body>
