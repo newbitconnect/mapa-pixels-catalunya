@@ -1,1 +1,29 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    background-color: #f9f9f9;
+}
+
+header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+}
+
+main {
+    margin: 20px;
+}
+
+#map-container {
+    display: inline-block;
+    margin: auto;
+}
+
+#mapa-pixels {
+    border: 2px solid #2c3e50;
+    width: 80%;
+    height: auto;
+}
 
