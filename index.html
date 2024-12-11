@@ -4,7 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapa de Cataluña en Píxeles</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        #map-container {
+            position: relative;
+            width: 1000px;
+            height: 1000px;
+        }
+        #grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* No bloquea interacciones con el mapa */
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -12,11 +26,12 @@
         <p>¡Compra tu espacio en el mapa y deja tu marca para siempre!</p>
     </header>
     <main>
-        <<div id="map-container" style="position: relative; width: 1000px; height: 1000px;">
-    <!-- SVG del mapa -->
-    <object id="map" data="Mapa_provincial_de_Catalunya.svg" type="image/svg+xml" style="width: 100%; height: 100%;"></object>
-</div>
-
+        <div id="map-container">
+            <!-- Cargar el mapa SVG -->
+            <object id="map" data="Mapa_provincial_de_Catalunya.svg" type="image/svg+xml" style="width: 100%; height: 100%;"></object>
+            <!-- Superponer la cuadrícula -->
+            <div id="grid"></div>
+        </div>
     </main>
     <script src="script.js"></script>
 </body>
