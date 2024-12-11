@@ -1,38 +1,23 @@
-document.querySelectorAll("rect").forEach((pixel) => {
-    pixel.addEventListener("click", () => {
-        // Cambiar color para mostrar que está seleccionado
-        pixel.setAttribute("fill", "yellow");
+const gridContainer = document.getElementById("grid");
+const gridSize = 50; // Tamaño del lado de cada celda
+const rows = 1000 / gridSize;
+const cols = 1000 / gridSize;
 
-        // Confirmar selección del píxel
-        const id = pixel.getAttribute("id");
-        const confirmacion = confirm(`¿Quieres comprar el píxel ${id}?`);
-        if (confirmacion) {
-            // Obtener el contenedor del botón de pago
-            const paymentContainer = document.getElementById("payment-container");
-
-            // Limpiar botones previos
-            paymentContainer.innerHTML = "";
-
-            // Crear el formulario de PayPal
-            const paymentForm = `
-                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-                    <input type="hidden" name="cmd" value="_xclick">
-                    <input type="hidden" name="business" value="tu-email@paypal.com">
-                    <input type="hidden" name="item_name" value="Píxel ${id}">
-                    <input type="hidden" name="amount" value="1.00">
-                    <input type="hidden" name="currency_code" value="EUR">
-                    <input type="submit" value="Comprar Píxel ${id}">
-                </form>
-            `;
-
-            // Añadir el botón al contenedor
-            paymentContainer.innerHTML = paymentForm;
-
-            // Cambiar el píxel a color azul tras la compra (opcional, manual)
-            alert(`¡Has comprado el píxel ${id}!`);
-            pixel.setAttribute("fill", "blue");
-        } else {
-            pixel.setAttribute("fill", "white");
-        }
-    });
-});
+for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+        const cell = document.createElement("div");
+        cell.style.position = "absolute";
+        cell.style.width = `${gridSize}px`;
+        cell.style.height = `${gridSize}px`;
+        cell.style.left = `${col * gridSize}px`;
+        cell.style.top = `${row * gridSize}px`;
+        cell.style.border = "1px solid rgba(0,0,0,0.1)";
+        cell.setAttribute("data-id", `cell-${row}-${col}`);
+        cell.style.pointerEvents = "auto"; // Hacer clic en las celdas
+        cell.addEventListener("click", () => {
+            cell.style.backgroundColor = "yellow"; // Cambiar color al hacer clic
+            alert(`Seleccionaste la celda ${cell.getAttribute("data-id")}`);
+        });
+        gridContainer.appendChild(cell);
+    }
+}
