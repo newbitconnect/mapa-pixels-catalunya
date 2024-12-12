@@ -22,12 +22,11 @@
             border: 1px solid rgba(0, 0, 0, 0.1);
             background-size: cover;
             background-position: center;
-            transition: transform 0.3s ease-in-out;
-            box-shadow: none; /* Sin borde interno por defecto */
+            transition: transform 0.3s ease-in-out; /* Suaviza el efecto de zoom */
         }
         .cell.zoomable:hover {
-            transform: scale(1.4);
-            z-index: 10;
+            transform: scale(1.4); /* Incrementa el tamaño un 40% */
+            z-index: 10; /* Asegura que la celda esté encima del resto */
         }
     </style>
 </head>
@@ -49,8 +48,6 @@
         const rows = 1000 / gridSize;
         const cols = 1000 / gridSize;
 
-        let selectedCells = [];
-
         // Generar cuadrícula
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < cols; col++) {
@@ -67,44 +64,23 @@
             }
         }
 
+        let selectedCells = [];
+
         // Seleccionar una celda
         function selectCell(cell) {
-            const row = parseInt(cell.getAttribute("data-row"));
-            const col = parseInt(cell.getAttribute("data-col"));
-
-            // Verificar si es contigua a las seleccionadas
-            if (selectedCells.length > 0) {
-                const lastRow = parseInt(selectedCells[selectedCells.length - 1].getAttribute("data-row"));
-                const lastCol = parseInt(selectedCells[selectedCells.length - 1].getAttribute("data-col"));
-
-                const isContiguous =
-                    (Math.abs(row - lastRow) <= 1 && col === lastCol) || // Misma columna, fila contigua
-                    (Math.abs(col - lastCol) <= 1 && row === lastRow);   // Misma fila, columna contigua
-
-                if (!isContiguous) {
-                    // No es contigua: desmarcar todas y marcar solo la actual
-                    clearSelection();
-                    markCell(cell);
-                    selectedCells = [cell];
-                    return;
-                }
-            }
-
-            // Añadir o quitar celda seleccionada
             if (selectedCells.includes(cell)) {
-                unmarkCell(cell);
+                cell.style.outline = "none";
                 selectedCells = selectedCells.filter(c => c !== cell);
             } else {
-                markCell(cell);
+                cell.style.outline = "2px solid red";
                 selectedCells.push(cell);
             }
 
             // Verificar si forman un cuadrado válido
-            if (!isValidSquare(selectedCells)) {
-                // Si no forman un cuadrado válido, desmarcar todo excepto la última seleccionada
-                clearSelection();
-                markCell(cell);
-                selectedCells = [cell];
+            if (isValidSquare(selectedCells)) {
+                const size = Math.sqrt(selectedCells.length);
+                alert(`Puedes fusionar las celdas en un cuadrado de ${size}x${size}`);
+                showUploadButton();
             }
         }
 
@@ -122,20 +98,38 @@
                    Math.max(...cols) - Math.min(...cols) === size - 1;
         }
 
-        // Marcar una celda con un borde interno fino
-        function markCell(cell) {
-            cell.style.boxShadow = "inset 0 0 0 2px red";
+        // Mostrar el botón para subir imágenes
+        function showUploadButton() {
+            const uploadInput = document.getElementById("upload-image");
+            uploadInput.style.display = "block";
+            uploadInput.addEventListener("change", () => uploadImage(uploadInput.files[0]));
         }
 
-        // Desmarcar una celda
-        function unmarkCell(cell) {
-            cell.style.boxShadow = "none";
-        }
+        // Subir y mostrar la imagen
+        function uploadImage(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const url = e.target.result;
+                const size = Math.sqrt(selectedCells.length);
+                const firstCell = selectedCells[0];
 
-        // Limpiar la selección de todas las celdas
-        function clearSelection() {
-            selectedCells.forEach(cell => unmarkCell(cell));
-            selectedCells = [];
+                firstCell.style.width = `${gridSize * size}px`;
+                firstCell.style.height = `${gridSize * size}px`;
+                firstCell.style.backgroundImage = `url(${url})`;
+                firstCell.classList.add("zoomable"); // Habilitar zoom
+
+                // Ocultar las demás celdas seleccionadas
+                selectedCells.forEach(cell => {
+                    if (cell !== firstCell) {
+                        cell.style.display = "none";
+                    }
+                });
+
+                // Limpiar selección
+                selectedCells = [];
+                document.getElementById("upload-image").style.display = "none";
+            };
+            reader.readAsDataURL(file);
         }
     </script>
 </body>
