@@ -26,12 +26,42 @@
         <p>¡Compra tu espacio en el mapa y deja tu marca para siempre!</p>
     </header>
     <main>
-       <div id="map-container" style="position: relative; width: 1000px; height: 1000px;">
-    <object id="map" data="Mapa_provincial_de_Catalunya.svg" type="image/svg+xml" style="width: 100%; height: 100%;"></object>
-</div>
-
+        <div id="map-container">
+            <!-- Mapa SVG -->
+            <object id="map" data="Mapa_provincial_de_Catalunya.svg" type="image/svg+xml" style="width: 100%; height: 100%;"></object>
+            <!-- Contenedor para la cuadrícula -->
+            <div id="grid"></div>
+        </div>
     </main>
-    <script src="script.js"></script>
+    <script>
+        // Generar la cuadrícula con celdas más pequeñas
+        const gridContainer = document.getElementById("grid");
+        const gridSize = 25; // Tamaño de cada celda (1/4 de las celdas originales)
+        const rows = 1000 / gridSize; // Filas totales
+        const cols = 1000 / gridSize; // Columnas totales
+
+        // Limpiar el contenedor antes de generar la cuadrícula
+        gridContainer.innerHTML = "";
+
+        // Crear las nuevas celdas
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                const cell = document.createElement("div");
+                cell.style.position = "absolute";
+                cell.style.width = `${gridSize}px`;
+                cell.style.height = `${gridSize}px`;
+                cell.style.left = `${col * gridSize}px`;
+                cell.style.top = `${row * gridSize}px`;
+                cell.style.border = "1px solid rgba(0,0,0,0.1)";
+                cell.setAttribute("data-id", `cell-${row}-${col}`);
+                cell.style.pointerEvents = "auto"; // Habilitar clics en las celdas
+                cell.addEventListener("click", () => {
+                    cell.style.backgroundColor = "yellow"; // Marca la celda como seleccionada
+                    alert(`Has seleccionado la celda ${cell.getAttribute("data-id")}`);
+                });
+                gridContainer.appendChild(cell);
+            }
+        }
+    </script>
 </body>
 </html>
-
