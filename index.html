@@ -22,6 +22,11 @@
             border: 1px solid rgba(0, 0, 0, 0.1);
             background-size: cover;
             background-position: center;
+            transition: transform 0.3s ease-in-out; /* Suaviza el efecto de zoom */
+        }
+        .cell.zoomable:hover {
+            transform: scale(1.2); /* Incrementa el tamaño un 20% */
+            z-index: 10; /* Asegura que la celda esté encima del resto */
         }
     </style>
 </head>
@@ -111,6 +116,7 @@
                 firstCell.style.width = `${gridSize * size}px`;
                 firstCell.style.height = `${gridSize * size}px`;
                 firstCell.style.backgroundImage = `url(${url})`;
+                firstCell.classList.add("zoomable"); // Habilitar zoom
 
                 // Ocultar las demás celdas seleccionadas
                 selectedCells.forEach(cell => {
@@ -127,4 +133,6 @@
         }
     </script>
 </body>
+</html>
+
 </html>
