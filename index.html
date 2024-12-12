@@ -20,7 +20,7 @@
         .cell {
             position: absolute;
             border: 1px solid rgba(0, 0, 0, 0.1);
-            background-size: cover; /* Para que la imagen ocupe toda la celda */
+            background-size: cover;
             background-position: center;
         }
     </style>
@@ -32,17 +32,14 @@
     </header>
     <main>
         <div id="map-container">
-            <!-- Mapa SVG -->
             <object id="map" data="Mapa_provincial_de_Catalunya.svg" type="image/svg+xml" style="width: 100%; height: 100%;"></object>
-            <!-- Contenedor para la cuadrícula -->
             <div id="grid"></div>
         </div>
-        <!-- Formulario para subir imágenes -->
         <input type="file" id="upload-image" style="display: none;" accept="image/*" />
     </main>
     <script>
         const gridContainer = document.getElementById("grid");
-        const gridSize = 12.5; // Tamaño de cada celda
+        const gridSize = 12.5;
         const rows = 1000 / gridSize;
         const cols = 1000 / gridSize;
 
@@ -55,7 +52,8 @@
                 cell.style.height = `${gridSize}px`;
                 cell.style.left = `${col * gridSize}px`;
                 cell.style.top = `${row * gridSize}px`;
-                cell.setAttribute("data-id", `cell-${row}-${col}`);
+                cell.setAttribute("data-row", row);
+                cell.setAttribute("data-col", col);
                 cell.addEventListener("click", () => selectCell(cell));
                 gridContainer.appendChild(cell);
             }
@@ -73,7 +71,7 @@
                 selectedCells.push(cell);
             }
 
-            // Verificar si se puede fusionar
+            // Verificar si forman un cuadrado válido
             if (isValidSquare(selectedCells)) {
                 const size = Math.sqrt(selectedCells.length);
                 alert(`Puedes fusionar las celdas en un cuadrado de ${size}x${size}`);
@@ -81,16 +79,18 @@
             }
         }
 
-        // Verificar si las celdas seleccionadas forman un cuadrado válido
+        // Verificar si las celdas seleccionadas forman un cuadrado
         function isValidSquare(cells) {
             const total = cells.length;
             const size = Math.sqrt(total);
             if (!Number.isInteger(size)) return false;
 
-            const rows = new Set(cells.map(cell => cell.style.top));
-            const cols = new Set(cells.map(cell => cell.style.left));
+            const rows = [...new Set(cells.map(cell => parseInt(cell.getAttribute("data-row"))))];
+            const cols = [...new Set(cells.map(cell => parseInt(cell.getAttribute("data-col"))))];
 
-            return rows.size === size && cols.size === size;
+            return rows.length === size && cols.length === size &&
+                   Math.max(...rows) - Math.min(...rows) === size - 1 &&
+                   Math.max(...cols) - Math.min(...cols) === size - 1;
         }
 
         // Mostrar el botón para subir imágenes
@@ -107,6 +107,7 @@
                 const url = e.target.result;
                 const size = Math.sqrt(selectedCells.length);
                 const firstCell = selectedCells[0];
+
                 firstCell.style.width = `${gridSize * size}px`;
                 firstCell.style.height = `${gridSize * size}px`;
                 firstCell.style.backgroundImage = `url(${url})`;
