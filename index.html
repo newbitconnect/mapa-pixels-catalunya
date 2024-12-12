@@ -16,7 +16,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none; /* No bloquea interacciones con el mapa */
+        }
+        .cell {
+            position: absolute;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background-size: cover; /* Para que la imagen ocupe toda la celda */
+            background-position: center;
         }
     </style>
 </head>
@@ -32,35 +37,92 @@
             <!-- Contenedor para la cuadrícula -->
             <div id="grid"></div>
         </div>
+        <!-- Formulario para subir imágenes -->
+        <input type="file" id="upload-image" style="display: none;" accept="image/*" />
     </main>
     <script>
-        // Generar la cuadrícula con celdas más pequeñas
         const gridContainer = document.getElementById("grid");
-        const gridSize = 12.5; // Tamaño de cada celda (1/4 de las celdas anteriores)
-        const rows = 1000 / gridSize; // Filas totales
-        const cols = 1000 / gridSize; // Columnas totales
+        const gridSize = 12.5; // Tamaño de cada celda
+        const rows = 1000 / gridSize;
+        const cols = 1000 / gridSize;
 
-        // Limpiar el contenedor antes de generar la cuadrícula
-        gridContainer.innerHTML = "";
-
-        // Crear las nuevas celdas
+        // Generar cuadrícula
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < cols; col++) {
                 const cell = document.createElement("div");
-                cell.style.position = "absolute";
+                cell.classList.add("cell");
                 cell.style.width = `${gridSize}px`;
                 cell.style.height = `${gridSize}px`;
                 cell.style.left = `${col * gridSize}px`;
                 cell.style.top = `${row * gridSize}px`;
-                cell.style.border = "1px solid rgba(0,0,0,0.1)";
                 cell.setAttribute("data-id", `cell-${row}-${col}`);
-                cell.style.pointerEvents = "auto"; // Habilitar clics en las celdas
-                cell.addEventListener("click", () => {
-                    cell.style.backgroundColor = "yellow"; // Marca la celda como seleccionada
-                    alert(`Has seleccionado la celda ${cell.getAttribute("data-id")}`);
-                });
+                cell.addEventListener("click", () => selectCell(cell));
                 gridContainer.appendChild(cell);
             }
+        }
+
+        let selectedCells = [];
+
+        // Seleccionar una celda
+        function selectCell(cell) {
+            if (selectedCells.includes(cell)) {
+                cell.style.outline = "none";
+                selectedCells = selectedCells.filter(c => c !== cell);
+            } else {
+                cell.style.outline = "2px solid red";
+                selectedCells.push(cell);
+            }
+
+            // Verificar si se puede fusionar
+            if (isValidSquare(selectedCells)) {
+                const size = Math.sqrt(selectedCells.length);
+                alert(`Puedes fusionar las celdas en un cuadrado de ${size}x${size}`);
+                showUploadButton();
+            }
+        }
+
+        // Verificar si las celdas seleccionadas forman un cuadrado válido
+        function isValidSquare(cells) {
+            const total = cells.length;
+            const size = Math.sqrt(total);
+            if (!Number.isInteger(size)) return false;
+
+            const rows = new Set(cells.map(cell => cell.style.top));
+            const cols = new Set(cells.map(cell => cell.style.left));
+
+            return rows.size === size && cols.size === size;
+        }
+
+        // Mostrar el botón para subir imágenes
+        function showUploadButton() {
+            const uploadInput = document.getElementById("upload-image");
+            uploadInput.style.display = "block";
+            uploadInput.addEventListener("change", () => uploadImage(uploadInput.files[0]));
+        }
+
+        // Subir y mostrar la imagen
+        function uploadImage(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const url = e.target.result;
+                const size = Math.sqrt(selectedCells.length);
+                const firstCell = selectedCells[0];
+                firstCell.style.width = `${gridSize * size}px`;
+                firstCell.style.height = `${gridSize * size}px`;
+                firstCell.style.backgroundImage = `url(${url})`;
+
+                // Ocultar las demás celdas seleccionadas
+                selectedCells.forEach(cell => {
+                    if (cell !== firstCell) {
+                        cell.style.display = "none";
+                    }
+                });
+
+                // Limpiar selección
+                selectedCells = [];
+                document.getElementById("upload-image").style.display = "none";
+            };
+            reader.readAsDataURL(file);
         }
     </script>
 </body>
