@@ -26,13 +26,10 @@
         <p>¡Compra tu espacio en el mapa y deja tu marca para siempre!</p>
     </header>
     <main>
-        <div id="map-container">
-            <!-- Cargar el mapa SVG -->
-            <object id="map" data="Mapa_provincial_de_Catalunya.svg" type="image/svg+xml" style="width: 100%; height: 100%;"></object>
+       <div id="map-container" style="position: relative; width: 1000px; height: 1000px;">
+    <object id="map" data="Mapa_provincial_de_Catalunya.svg" type="image/svg+xml" style="width: 100%; height: 100%;"></object>
+</div>
 
-            <!-- Superponer la cuadrícula -->
-            <div id="grid"></div>
-        </div>
     </main>
     <script src="script.js"></script>
 </body>
